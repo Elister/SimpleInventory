@@ -5,12 +5,19 @@ using UnityEngine;
 
 public class Inventory
 {
-    public const int Capacity = 50;
+    public const int Capacity = 20;
 
+    public static Dictionary<int, Item> ItemsBase;
+    
     private readonly InventorySlot[] Content;
 
     public Inventory()
     {
+        if (ItemsBase == null)
+        {
+            ItemsBase = new Dictionary<int, Item>();
+        }
+        
         Content = new InventorySlot[Capacity];
     }
 

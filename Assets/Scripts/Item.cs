@@ -27,15 +27,22 @@ public class Item
 
     public string Name { get; set; }
 
+    public Sprite Pic { get; set; }
+    
     public Item()
     {
         _id = 0;
         Name = "Undefined item";
+        Pic = null;
     }
 
     public Item(int id, string name)
     {
         Id = id;
         Name = name;
+        if (_id != 0)
+        {
+            Resources.Load<Sprite>(String.Format("Sprites/Items/{0}", _id));
+        }
     }
 }

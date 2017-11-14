@@ -3,6 +3,12 @@ using UnityEngine;
 
 public class InventorySlot
 {
+    public class SlotChangedEventArgs : EventArgs
+    {
+        public int OwnerId { get; set; }
+        public int ItemId { get; set; }
+        public int Quantity { get; set; }
+    }
     private const int SlotCapacity = 99;
 
     private int _id;
