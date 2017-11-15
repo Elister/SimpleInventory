@@ -52,7 +52,7 @@ public class ItemView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 		var createdObject = Instantiate(_prefab);
 		createdObject._ownerId = ownerId;
 		model.SlotStateChanged += createdObject.OnSlotStateChanged;
-		createdObject.ItemActionButton.image.sprite = ownerId == 0 ? buttonStates[1] : buttonStates[0];
+		createdObject.ItemActionButton.image.sprite = ownerId == 0 ? buttonStates[1] : buttonStates[0]; //TODO: Change!
 		return createdObject;
 	}
 
@@ -81,9 +81,7 @@ public class ItemView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
 			if (ItemClicked == null)
 			{
-				#if UNITY_EDITOR
 				Debug.LogWarning("No listener for ItemClicked event!");
-				#endif
 				return;
 			}
 			

@@ -94,6 +94,6 @@ public class InventorySlot
 
     public override string ToString()
     {
-        return string.Format("Item {0}, quantity {1} of {2}", ItemId, Quantity, _slotCapacity);
+        return string.Format("Item {0}, quantity {1} of {2}\n", ItemId, Quantity, _slotCapacity);
     }
 }

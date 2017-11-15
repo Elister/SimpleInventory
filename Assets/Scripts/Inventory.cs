@@ -73,6 +73,6 @@ public class Inventory
 
     public override string ToString()
     {
-        return string.Format("Inventory of owner#{0}, capacity: {1}", OwnerId, Capacity);
+        return string.Format("Inventory of owner#{0}, capacity: {1}\n", OwnerId, Capacity);
     }
 }
