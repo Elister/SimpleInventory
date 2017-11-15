@@ -38,14 +38,30 @@ public class Inventory
     //Priority for slots: 1. Slot with this item; 2. Empty slot.
     public void AddItem(int itemId, uint quantity)
     {
+        int firstEmpty = -1;
+        
         for (var i = 0; i < Content.Length; ++i)
         {
-            if (Content[i].AddItem(itemId, quantity)){
+            /*Remember first empty place*/
+            if (firstEmpty < 0 && Content[i].IsEmpty())
+            {
+                firstEmpty = i;
+            }
+            
+            /*Try to find simmiliar slot*/
+            if (!Content[i].IsEmpty() && Content[i].AddItem(itemId, quantity)){
                 return;
             }
         }
-    
-        Debug.LogWarningFormat("Inventory is full! Item {0} need cannot be added", itemId);
+
+        if (firstEmpty < 0)
+        {
+            Debug.LogWarningFormat("Inventory is full! Item {0} need cannot be added", itemId);
+            return;
+        }
+        
+        /*Add item to first free slot*/
+        Content[firstEmpty].AddItem(itemId, quantity);
     }
 
     //Removes one item from item slot with SlotId
