@@ -28,7 +28,7 @@ public class GameView : MonoBehaviour
 		var panel = Instantiate(_inventoryPanelPrefab, _cachedTransform);
 		panel.name = "Inventory#" + model.OwnerId;
 		panel.GetComponent<Image>().color =
-			model.OwnerId == settings.Enemy ? new Color(255, 0, 0, 0.2f) : new Color(0, 255, 0, 0.2f);
+			model.OwnerId == settings.EnemyId ? new Color(255, 0, 0, 0.2f) : new Color(0, 255, 0, 0.2f);
 		var contentTransform = panel.transform.GetChild(0).GetChild(0);
 		_panels.Add(panel);
 
@@ -39,7 +39,7 @@ public class GameView : MonoBehaviour
 			item.ItemClicked += (sender, args) =>
 			{
 				var id = item.ItemId;
-				if (args.OwnerId == settings.Enemy) //TODO: Very bad approach
+				if (args.OwnerId == settings.EnemyId) //TODO: Very bad approach
 				{
 					settings.PlayerInventory.AddItem(id, AddPerClick);
 					settings.EnemyInventory.RemoveItem(id, RemPerClick);

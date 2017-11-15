@@ -36,13 +36,10 @@ public class Item
         Pic = null;
     }
 
-    public Item(int id, string name)
+    public Item(int id, string name, Sprite pic)
     {
         Id = id;
         Name = name;
-        if (_id != -1)
-        {
-            Pic = Resources.Load<Sprite>(String.Format("Sprites/Items/{0}", _id));
-        }
+        Pic = pic;
     }
 }

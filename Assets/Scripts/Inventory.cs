@@ -10,19 +10,12 @@ public class Inventory
     public readonly int Capacity;
     public readonly InventorySlot[] Content;
     
-    public static Dictionary<int, Item> ItemsBase;
-    
     private Inventory() {}
     
     public Inventory(int ownerId, ISessionSettings settings)
     {
         OwnerId = ownerId;
         Capacity = settings.InventoryCapacity;
-        
-        if (ItemsBase == null)
-        {
-            ItemsBase = new Dictionary<int, Item>();
-        }
         
         Content = new InventorySlot[Capacity];
         

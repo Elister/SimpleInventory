@@ -4,8 +4,8 @@ using UnityEngine;
 
 public interface ISessionSettings
 {
-	int Player { get; }
-	int Enemy { get; }
+	int PlayerId { get; }
+	int EnemyId { get; }
 	int InventoryCapacity { get; }
 	int ItemPerSlot { get; }
 	Inventory PlayerInventory { get; }
@@ -13,20 +13,15 @@ public interface ISessionSettings
 }
 public class App : MonoBehaviour, ISessionSettings
 {
-	public int PlayerId = 0;
-	public int EnemyId = 1;
-	public int BackpackCapacity = 20;
-	public int ItemsPerStack = 99;
-
-	private void Awake()
+	private ItemGenerator _gen;
+	
+	void Awake()
 	{
-		Inventory.ItemsBase = new Dictionary<int, Item>
-		{
-			{0, new Item(0, "Топор Рока")},
-			{1, new Item(1, "Щит Судьбы")},
-			{2, new Item(2, "Шлем Огня")}
-		};
-
+		_gen = new ItemGenerator();
+		PlayerId = 0;
+		EnemyId = 1;
+		InventoryCapacity = 3;
+		ItemPerSlot = 1000;
 	}
 
 	// Use this for initialization
@@ -35,44 +30,39 @@ public class App : MonoBehaviour, ISessionSettings
 		EnemyInventory = new Inventory(EnemyId, this);
 		PlayerInventory = new Inventory(PlayerId, this);
 		
-		EnemyInventory.AddItem(1, 3);
-		EnemyInventory.AddItem(0, 2);
-		EnemyInventory.AddItem(2, 1);
+		EnemyInventory.AddItem(_gen.GetRandomNewItem().Id, 5);
+		EnemyInventory.AddItem(_gen.GetRandomNewItem().Id, 3);
+		EnemyInventory.AddItem(_gen.GetRandomNewItem().Id, 2);
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		if (Input.GetButtonDown("Fire1"))
 		{
-			//Generate item
+			Debug.Log("Boom! New random stuff!");
+			EnemyInventory.AddItem(_gen.GetRandomNewItem().Id, 3);
 		}
 
 		if (Input.GetButtonDown("Fire2"))
+		{
+			Debug.Log("Boom! Boring old stuff!");
+			EnemyInventory.AddItem(_gen.GetRandomOldItem().Id, 3);
+		}
+		
+		if (Input.GetButtonDown("Fire3"))
 		{
 			PlayerInventory.LogContent();
 			EnemyInventory.LogContent();
 		}
 	}
 
-	public int Player
-	{
-		get { return PlayerId; }
-	}
+	public int PlayerId { get; private set; }
 
-	public int Enemy
-	{
-		get { return EnemyId; }
-	}
+	public int EnemyId { get; private set; }
 
-	public int InventoryCapacity
-	{
-		get { return BackpackCapacity; }
-	}
+	public int InventoryCapacity { get; private set; }
 
-	public int ItemPerSlot
-	{
-		get { return ItemsPerStack; }
-	}
+	public int ItemPerSlot { get; private set; }
 
 	public Inventory PlayerInventory { get; private set; }
 	public Inventory EnemyInventory { get; private set; }

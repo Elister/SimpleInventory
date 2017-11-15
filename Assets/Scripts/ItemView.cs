@@ -104,10 +104,10 @@ public class ItemView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 		}
 
 		
-		if (Inventory.ItemsBase.ContainsKey(args.ItemId))
+		if (ItemGenerator.ItemsBase.ContainsKey(args.ItemId))
 		{
 			gameObject.SetActive(true);
-			var itemDescription = Inventory.ItemsBase[args.ItemId];
+			var itemDescription = ItemGenerator.ItemsBase[args.ItemId];
 			ItemId = args.ItemId;
 			ItemPic.sprite = itemDescription.Pic;
 			ItemNameQuantity.text = string.Format("{0} ({1})", itemDescription.Name, args.Quantity);
