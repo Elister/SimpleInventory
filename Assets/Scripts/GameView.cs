@@ -14,7 +14,7 @@ public class GameView : MonoBehaviour
 	private List<GameObject> _panels;
 	
 	// Use this for initialization
-	void Start ()
+	void Awake ()
 	{
 		_inventoryPanelPrefab = Resources.Load<GameObject>("Prefabs/InventoryArea");
 		_cachedTransform = transform;
@@ -35,7 +35,6 @@ public class GameView : MonoBehaviour
 		for (var i = 0; i < model.Capacity; ++i)
 		{
 			var item = ItemView.Create(model.Content[i], model.OwnerId);
-			item.ivid = model.OwnerId * 1000 + i;
 			item.transform.SetParent(contentTransform);
 			item.ItemClicked += (sender, args) =>
 			{
