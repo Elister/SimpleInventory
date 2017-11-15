@@ -35,7 +35,10 @@ public class ItemGenerator
         "Силы",
         "Джа",
         "Судьбы",
-        "Мести"
+        "Мести",
+        "Отваги",
+        "Смелости",
+        "Ловкости"
     };
 
     private readonly Dictionary<ItemType, List<string>> ItemNames = new Dictionary<ItemType, List<string>>
@@ -70,7 +73,7 @@ public class ItemGenerator
         {
             ItemSprites.Add(i, new List<Sprite>());
         }
-        
+
         /*Load sprites*/
         Sprite[] items = Resources.LoadAll<Sprite>("Sprites/Items");
         foreach (var sprite in items)
@@ -105,7 +108,7 @@ public class ItemGenerator
                 ItemSprites[(int) ItemType.Shield].Add(sprite);
             }
         }
-        
+
         /*generate combinations*/
         Combinations = new List<Combination>();
         for (var i = 0; i < typesCount; ++i) //Item name
@@ -135,7 +138,7 @@ public class ItemGenerator
 
         var value = new Item(ItemsBase.Count,
             ItemNames[choosen.type][choosen.item] + " " + CharNames[choosen.feature],
-            ItemSprites[(int)choosen.type][choosen.sprite]);
+            ItemSprites[(int) choosen.type][choosen.sprite]);
 
         ItemsBase.Add(value.Id, value);
         return value;

@@ -28,7 +28,7 @@ public class Item
     public string Name { get; set; }
 
     public Sprite Pic { get; set; }
-    
+
     public Item()
     {
         _id = -1;
