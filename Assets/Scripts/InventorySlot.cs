@@ -3,51 +3,37 @@ using UnityEngine;
 
 public class InventorySlot
 {
+    public event EventHandler<SlotChangedEventArgs> SlotStateChanged;
+
     public class SlotChangedEventArgs : EventArgs
     {
         public int OwnerId { get; set; }
         public int ItemId { get; set; }
-        public int Quantity { get; set; }
+        public uint Quantity { get; set; }
     }
-    private const int SlotCapacity = 99;
 
-    private int _id;
-    private int _quantity;
+    private const int UndefinedId = -1;
+    private readonly int _slotCapacity;
+    private readonly int _owner;
 
     public int ItemId { get; private set; }
+    public uint Quantity { get; private set; }
 
-    //On get: returns item quantity; 
-    //On set: checks if quantity value correct then change it to value (if not - set zero id)
-    public int Quantity
+    private InventorySlot()
     {
-        get { return _quantity; }
-
-        private set
-        {
-            if (value > -1 && value < SlotCapacity + 1)
-            {
-                _quantity = value;
-            }
-            else
-            {
-#if UNITY_EDITOR
-                Debug.LogWarningFormat("Incorrect quantity value! ItemId is {0}, value is {1}", ItemId, value);
-#endif
-                _quantity = 0;
-            }
-        }
     }
 
-
-    public InventorySlot()
+    public InventorySlot(int ownerId, int capacity)
     {
-        ItemId = 0;
+        _owner = ownerId;
+        _slotCapacity = capacity;
+        ItemId = UndefinedId;
         Quantity = 0;
     }
 
     public bool IsFull()
     {
-        return Quantity == SlotCapacity; //Can add stack restriction
+        return Quantity == _slotCapacity; //Can add stack restriction
     }
 
     public bool IsEmpty()
@@ -55,57 +41,59 @@ public class InventorySlot
         return Quantity == 0;
     }
 
-    public void AddItem(int id)
+    public bool AddItem(int itemId, uint quantity)
     {
-        if (IsEmpty())
+        /*Update model, if neccessary*/
+        if (itemId == -1 || (ItemId != -1 && ItemId != itemId) || Quantity + quantity >= _slotCapacity)
         {
-            ItemId = id;
-            Quantity = 1;
-        }
-        else if (ItemId == id) //Maybe overchecking
-        {
-            Quantity++;
-        }
-        else
-        {
-#if UNITY_EDITOR
-            Debug.LogWarningFormat("Incorrect call of AddItem. Try to add {0} but in slot is {1}", id, ItemId);
-#endif
-            return;
+            return false;
         }
 
-#if UNITY_EDITOR
-        Debug.LogFormat("Item {0} added. Count of items {0} is {1}", ItemId, Quantity);
-#endif
+        ItemId = itemId;
+        Quantity += quantity;
+
+        Debug.LogFormat("#{2}: Item {0} added. Count of items {0} is {1}", ItemId, Quantity, _owner);
+
+        /* Update view */
+        SlotStateChanged(this, new SlotChangedEventArgs
+        {
+            ItemId = ItemId,
+            OwnerId = _owner,
+            Quantity = Quantity
+        });
+
+        return true;
     }
 
-    public void RemoveItem()
+    public bool RemoveItem(int item, uint RemQuantity)
     {
-        if (!IsEmpty())
+        if (item == -1 || ItemId != item)
         {
-            Quantity--;
-
-#if UNITY_EDITOR
-            Debug.LogFormat("Item {0} removed. Count of items {0} is {1}", ItemId, Quantity);
-#endif
-
-            if (Quantity == 0)
-            {
-                ItemId = 0;
-#if UNITY_EDITOR
-                Debug.LogFormat("Item erased.");
-#endif
-            }
-        }
-        else
-        {
-#if UNITY_EDITOR
-            Debug.LogWarningFormat("Incorrect call of RemoveItem (empty slot)");
-#endif
+            return false;
         }
 
-#if UNITY_EDITOR
-        Debug.LogFormat("Item {0} added. Count of items {0} is {1}", ItemId, Quantity);
-#endif
+        /*Update model, if neccessary*/
+        Quantity -= RemQuantity;
+
+        Debug.LogFormat("#{2}: Item {0} removed. Count of items {0} is {1}", ItemId, Quantity, _owner);
+
+        SlotStateChanged(this, new SlotChangedEventArgs
+        {
+            ItemId = ItemId,
+            OwnerId = 0,
+            Quantity = Quantity
+        });
+
+        if (Quantity == 0)
+        {
+            ItemId = UndefinedId;
+        }
+
+        return true;
+    }
+
+    public override string ToString()
+    {
+        return string.Format("Item {0}, quantity {1} of {2}", ItemId, Quantity, _slotCapacity);
     }
 }
