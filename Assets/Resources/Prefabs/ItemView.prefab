@@ -96,6 +96,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5dfcbc3b0789b44489d9e34fb326104f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ItemPic: {fileID: 114471119689406368}
+  ItemNameQuantity: {fileID: 114119407385178878}
+  ItemActionButton: {fileID: 114418290449335664}
 --- !u!114 &114119407385178878
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -162,9 +165,9 @@ MonoBehaviour:
   m_IgnoreLayout: 0
   m_MinWidth: -1
   m_MinHeight: -1
-  m_PreferredWidth: -1
+  m_PreferredWidth: 70
   m_PreferredHeight: -1
-  m_FlexibleWidth: 0.3
+  m_FlexibleWidth: -1
   m_FlexibleHeight: 1
   m_LayoutPriority: 1
 --- !u!114 &114418290449335664
@@ -220,7 +223,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
