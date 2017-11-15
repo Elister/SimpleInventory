@@ -5,30 +5,6 @@ using UnityEngine.UI;
 
 public class ItemView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-
-	public int ivid;
-	private static ItemView prefab;
-	private static string prefabPath = "Prefabs/ItemView";
-	
-	public static ItemView Create(InventorySlot model, int ownerId)
-	{
-		if (prefab == null)
-		{
-			prefab = Resources.Load<GameObject>(prefabPath).GetComponent<ItemView>();
-			if (prefab == null)
-			{
-				Debug.LogError("Cannot load ItemView prefab!");
-				return null;
-			}
-		}
-
-		var createdObject = Instantiate(prefab);
-		createdObject._ownerId = ownerId;
-		model.SlotStateChanged += createdObject.OnSlotStateChanged;
-
-		return createdObject;
-	}
-	
 	public class ItemClickedEventArgs : EventArgs
 	{
 		public int OwnerId { get; set; }
@@ -38,7 +14,9 @@ public class ItemView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 	
 	public event EventHandler<ItemClickedEventArgs> ItemClicked;
 	
+	private const string PrefabPath = "Prefabs/ItemView";
 	private int _ownerId;
+	private static ItemView _prefab;
 	
 	public int ItemId { get; private set; }
 	
@@ -46,10 +24,32 @@ public class ItemView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 	public Text   ItemNameQuantity;
 	public Button ItemActionButton;
 
+	public static ItemView Create(InventorySlot model, int ownerId)
+	{
+		if (_prefab == null)
+		{
+			_prefab = Resources.Load<GameObject>(PrefabPath).GetComponent<ItemView>();
+			if (_prefab == null)
+			{
+				Debug.LogError("Cannot load ItemView prefab!");
+				return null;
+			}
+		}
+
+		var createdObject = Instantiate(_prefab);
+		createdObject._ownerId = ownerId;
+		model.SlotStateChanged += createdObject.OnSlotStateChanged;
+
+		return createdObject;
+	}
+
+	
 	void Awake()
 	{
 		_ownerId = -1;
 		ItemId = -1;
+		
+		gameObject.SetActive(false);
 	}
 	
 	void Start ()
@@ -72,13 +72,8 @@ public class ItemView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 				return;
 			}
 			
-#if UNITY_EDITOR
-			Debug.LogFormat("Event ItemClocked will be called, IVId {0}", ivid);
-#endif
 			ItemClicked(this, args);
 		});
-		
-		//gameObject.SetActive(false);
 	}
 
 	//Handling changing in model
@@ -87,8 +82,8 @@ public class ItemView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 		/*Remove item fully*/
 		if (args.Quantity == 0)
 		{
+			gameObject.SetActive(false);
 			ItemId = -1;
-			//gameObject.SetActive(false);
 			ItemPic.sprite = null;
 			ItemNameQuantity.text = "undefined";
 			ItemActionButton.gameObject.SetActive(false);
@@ -98,7 +93,7 @@ public class ItemView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 		
 		if (Inventory.ItemsBase.ContainsKey(args.ItemId))
 		{
-			//gameObject.SetActive(true);
+			gameObject.SetActive(true);
 			var itemDescription = Inventory.ItemsBase[args.ItemId];
 			ItemId = args.ItemId;
 			ItemPic.sprite = itemDescription.Pic;
