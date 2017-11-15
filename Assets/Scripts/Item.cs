@@ -31,7 +31,7 @@ public class Item
     
     public Item()
     {
-        _id = 0;
+        _id = -1;
         Name = "Undefined item";
         Pic = null;
     }
@@ -40,9 +40,9 @@ public class Item
     {
         Id = id;
         Name = name;
-        if (_id != 0)
+        if (_id != -1)
         {
-            Resources.Load<Sprite>(String.Format("Sprites/Items/{0}", _id));
+            Pic = Resources.Load<Sprite>(String.Format("Sprites/Items/{0}", _id));
         }
     }
 }
