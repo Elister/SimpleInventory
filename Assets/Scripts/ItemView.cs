@@ -15,8 +15,11 @@ public class ItemView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 	public event EventHandler<ItemClickedEventArgs> ItemClicked;
 	
 	private const string PrefabPath = "Prefabs/ItemView";
+	private const string ButtonsStatesPath = "Sprites/Icons";
+	
 	private int _ownerId;
 	private static ItemView _prefab;
+	private static Sprite[] buttonStates;
 	
 	public int ItemId { get; private set; }
 	
@@ -35,11 +38,21 @@ public class ItemView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 				return null;
 			}
 		}
+		
+		if (buttonStates == null)
+		{
+			buttonStates = Resources.LoadAll<Sprite>(ButtonsStatesPath);
+			if (buttonStates == null)
+			{
+				Debug.LogError("Cannot load ItemView button states sprites!");
+				return null;
+			}
+		}
 
 		var createdObject = Instantiate(_prefab);
 		createdObject._ownerId = ownerId;
 		model.SlotStateChanged += createdObject.OnSlotStateChanged;
-
+		createdObject.ItemActionButton.image.sprite = ownerId == 0 ? buttonStates[1] : buttonStates[0];
 		return createdObject;
 	}
 
@@ -48,7 +61,9 @@ public class ItemView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 	{
 		_ownerId = -1;
 		ItemId = -1;
-		
+
+		buttonStates = Resources.LoadAll<Sprite>("Sprites/Icons");
+
 		gameObject.SetActive(false);
 	}
 	
@@ -97,8 +112,7 @@ public class ItemView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 			var itemDescription = Inventory.ItemsBase[args.ItemId];
 			ItemId = args.ItemId;
 			ItemPic.sprite = itemDescription.Pic;
-			ItemNameQuantity.text = String.Format("{0} ({1})", itemDescription.Name, args.Quantity);
-			ItemActionButton.image.color = _ownerId == 0 ? Color.green : Color.red;
+			ItemNameQuantity.text = string.Format("{0} ({1})", itemDescription.Name, args.Quantity);
 			return;
 		}
 		
